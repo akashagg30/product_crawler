@@ -4,7 +4,7 @@ from typing import Dict, List
 from playwright.async_api import async_playwright, Browser, Playwright, Page
 import threading
 
-from crawler.constants import REQUEST_DEFUALT_TIMEOUT, USER_AGENTS
+from async_utils.constants import REQUEST_DEFUALT_TIMEOUT, USER_AGENTS
 
 
 class PlaywrightManager:
@@ -100,14 +100,14 @@ class PlaywrightManager:
             for btn in pagination_buttons:
                 # filter out any elements that have an href attribute
                 href = await btn.get_attribute('href')
-                if href is None and btn.is_visible() and not btn.is_disabled():
+                if href is None and await btn.is_visible() and not await btn.is_disabled():
                     next_button = btn
                     break  # stop once we find the first valid next button without an href
 
             if not next_button:
                 has_next_page = False
             else:
-                next_button.click()
+                await next_button.click()
 
         return page_html_list
     
