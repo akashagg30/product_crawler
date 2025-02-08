@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  product-crawler:
+    build: .
+    ports:
+      - "8000:8000"  # Adjust according to your app's port
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/  # Same MongoDB connection string
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:4.4
+    volumes:
+      - mongodb_data:/data/db  # Persist MongoDB data between container restarts
+    ports:
+      - "27017:27017"
+    command: ["mongod", "--quiet"]
+    logging:
+      driver : "none"
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.runCommand('ping')"]
+      interval: 30s
+      retries: 5
+      timeout: 5s
+
+volumes:
+  mongodb_data:
