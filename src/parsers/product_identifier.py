@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import re
 
-from parsers.constants import PRODUCT_INDICATORS_REGEX, URL_PATTERN_REGEX
+from src.parsers.constants import PRODUCT_INDICATORS_REGEX, URL_PATTERN_REGEX
 
 
 class ProductPageDetector:

@@ -4,7 +4,7 @@ from typing import Dict, List
 from playwright.async_api import async_playwright, Browser, Playwright, Page
 import threading
 
-from async_utils.constants import REQUEST_DEFUALT_TIMEOUT, USER_AGENTS
+from src.async_utils.constants import REQUEST_DEFUALT_TIMEOUT, USER_AGENTS
 
 
 class PlaywrightManager:
@@ -21,7 +21,6 @@ class PlaywrightManager:
 
     def __init__(self, max_instances: int = 5):
         if not hasattr(self, 'initialized'):
-            print("max_instance", max_instances)
             self._max_instances = max_instances
             self._instances_queue : asyncio.Queue = asyncio.Queue(maxsize=max_instances) # to store available instance
             self._worker_to_instance_mapping : Dict[str, Browser] = {} # to store which worker is using which instance

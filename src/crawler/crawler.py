@@ -1,11 +1,11 @@
 from typing import Dict, List
 from asyncio import Queue
 from urllib.parse import urlparse, urlunparse
-from database.mongo_models import cache_url_data, get_cached_url_data, get_domain_products, store_domain_product
-from async_utils.workers import Workers
-from async_utils.playwright_manager import PlaywrightManager
-from parsers.product_identifier import ProductPageDetector
-from parsers.url_extractor import UrlExtractor
+from src.database.mongo_models import cache_url_data, get_cached_url_data, get_domain_products, store_domain_product
+from src.async_utils.workers import Workers
+from src.async_utils.playwright_manager import PlaywrightManager
+from src.parsers.product_identifier import ProductPageDetector
+from src.parsers.url_extractor import UrlExtractor
 
 
 class EcommerceCrawler:

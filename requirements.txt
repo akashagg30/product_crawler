@@ -1,0 +1,8 @@
+beautifulsoup4==4.11.1
+playwright==1.48.0
+playwright-stealth==1.0.6
+pymongo==4.10.1
+regex==2022.9.13
+requests==2.22.0
+ua-parser==0.16.1
+urllib3==1.25.7
