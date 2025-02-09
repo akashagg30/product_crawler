@@ -1,8 +1,9 @@
 from typing import Dict, List
 from asyncio import Queue
 from urllib.parse import urlparse, urlunparse
+from src.constants import MAX_WORKERS
 from src.database.mongo_models import cache_url_data, get_cached_url_data, get_domain_products, store_domain_product
-from src.async_utils.workers import Workers
+from src.async_utils.workers import WorkersManager
 from src.async_utils.playwright_manager import PlaywrightManager
 from src.parsers.product_identifier import ProductPageDetector
 from src.parsers.url_extractor import UrlExtractor
@@ -12,15 +13,16 @@ class EcommerceCrawler:
     _product_page_detector = ProductPageDetector
     _playwright_manager = PlaywrightManager
     _url_extractor = UrlExtractor
+    _worker_manager = WorkersManager
 
-    def __init__(self, domains: List[str], max_concurrent: int = 10):
+    def __init__(self, domains: List[str], max_concurrent: int = MAX_WORKERS):
         self._domains = domains
         self._visited_urls = set()
         self._product_urls = {domain: set() for domain in domains}
         self._max_concurrent = max_concurrent
         self._playwright = self._playwright_manager(max_concurrent)
         self._queue = Queue()
-        self._workers = Workers(self._queue, max_concurrent)
+        self._workers = self._worker_manager(self._queue, max_concurrent)
         
 
     def _is_domain_url(self, url: str) -> bool:

@@ -1,10 +1,11 @@
 import asyncio
 import random
 from typing import Dict, List
-from playwright.async_api import async_playwright, Browser, Playwright, Page
+from playwright.async_api import async_playwright, Browser, Page
 import threading
 
-from src.async_utils.constants import REQUEST_DEFUALT_TIMEOUT, USER_AGENTS
+from src.async_utils.constants import USER_AGENTS
+from src.constants import MAX_WORKERS, REQUEST_DEFAULT_TIMEOUT
 
 
 class PlaywrightManager:
@@ -19,7 +20,7 @@ class PlaywrightManager:
                     cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self, max_instances: int = 5):
+    def __init__(self, max_instances: int = MAX_WORKERS):
         if not hasattr(self, 'initialized'):
             self._max_instances = max_instances
             self._instances_queue : asyncio.Queue = asyncio.Queue(maxsize=max_instances) # to store available instance
@@ -71,7 +72,7 @@ class PlaywrightManager:
         while True:
             await page.evaluate('window.scrollTo(0, document.body.scrollHeight)') # scroll to the bottom of the page
 
-            await page.wait_for_load_state(state='networkidle', timeout=REQUEST_DEFUALT_TIMEOUT*1000)
+            await page.wait_for_load_state(state='networkidle', timeout=REQUEST_DEFAULT_TIMEOUT*1000)
             await asyncio.sleep(0.1) # waiting for content to render on DOM
             
             current_height = await page.evaluate('document.body.scrollHeight')
@@ -86,7 +87,7 @@ class PlaywrightManager:
         has_next_page = True  # flag to check if there is a next page
 
         while has_next_page:
-            await page.wait_for_load_state(state='networkidle', timeout=REQUEST_DEFUALT_TIMEOUT*1000)
+            await page.wait_for_load_state(state='networkidle', timeout=REQUEST_DEFAULT_TIMEOUT*1000)
             await asyncio.sleep(0.1) # waiting for content to render on dom
 
             page_html = await page.content()
@@ -118,7 +119,7 @@ class PlaywrightManager:
                 raise e
             content = []
             try:
-                await page.goto(url, timeout=REQUEST_DEFUALT_TIMEOUT*1000, wait_until="networkidle")
+                await page.goto(url, timeout=REQUEST_DEFAULT_TIMEOUT*1000, wait_until="networkidle")
                 await self._try_infinite_scrolling(page) # trying infinite scroll on first page
                 content = await self._get_paginated_html(page)
             except Exception as e:

@@ -2,7 +2,7 @@ import asyncio
 from asyncio import locks
 
 
-class Workers:
+class WorkersManager:
     def __init__(self, queue: asyncio.Queue, max_workers:int) -> None:
         self._queue = queue
         self._max_workers = max_workers
